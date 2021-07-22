@@ -169,20 +169,19 @@ export const moveRouteResponsesAction = (indexes: ReducerIndexes) =>
 
 /**
  * Add a new environment
- * TODO maybe filePath will become mandatory
  *
  * @param environment - environment to add
  */
 export const addEnvironmentAction = (
   environment: Environment,
-  afterUUID?: string,
-  filePath?: string
+  filePath: string,
+  afterUUID?: string
 ) =>
   <const>{
     type: ActionTypes.ADD_ENVIRONMENT,
     environment,
-    afterUUID,
-    filePath
+    filePath,
+    afterUUID
   };
 
 /**

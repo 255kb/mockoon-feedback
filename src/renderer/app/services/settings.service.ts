@@ -9,9 +9,8 @@ import {
   switchMap,
   tap
 } from 'rxjs/operators';
-import { Logger } from 'src/renderer/app/classes/logger';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
-import { settingsSchema } from 'src/renderer/app/constants/schemas.constants';
+import { SettingsSchema } from 'src/renderer/app/constants/settings-schema.constants';
 import {
   PreMigrationSettings,
   SettingsProperties
@@ -28,7 +27,6 @@ import {
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
   public oldLastMigration: number;
-  private logger = new Logger('[SERVICE][SETTINGS]');
   private storageKey = 'settings';
 
   constructor(
@@ -93,7 +91,7 @@ export class SettingsService {
               this.telemetryService.setFirstSession();
             }
 
-            const validatedSchema = settingsSchema.validate(
+            const validatedSchema = SettingsSchema.validate(
               settingsData.settings
             );
 

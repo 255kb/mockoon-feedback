@@ -6,7 +6,7 @@ import {
   Settings
 } from 'src/shared/models/settings.model';
 
-const settingsDefault: Settings = {
+const SettingsDefault: Settings = {
   welcomeShown: false,
   analytics: true,
   bannerDismissed: [],
@@ -23,59 +23,59 @@ const settingsDefault: Settings = {
   enableTelemetry: true
 };
 
-export const settingsSchema = Joi.object<Settings & PreMigrationSettings>({
-  welcomeShown: Joi.boolean().failover(settingsDefault.welcomeShown).required(),
-  analytics: Joi.boolean().failover(settingsDefault.analytics).required(),
+export const SettingsSchema = Joi.object<Settings & PreMigrationSettings>({
+  welcomeShown: Joi.boolean().failover(SettingsDefault.welcomeShown).required(),
+  analytics: Joi.boolean().failover(SettingsDefault.analytics).required(),
   bannerDismissed: Joi.array()
     .items(Joi.string(), Joi.any().strip())
-    .failover(settingsDefault.bannerDismissed)
+    .failover(SettingsDefault.bannerDismissed)
     .required(),
   logSizeLimit: Joi.number()
     .min(1)
-    .failover(settingsDefault.logSizeLimit)
+    .failover(SettingsDefault.logSizeLimit)
     .required(),
   maxLogsPerEnvironment: Joi.number()
     .min(1)
-    .failover(settingsDefault.maxLogsPerEnvironment)
+    .failover(SettingsDefault.maxLogsPerEnvironment)
     .required(),
   truncateRouteName: Joi.boolean()
-    .failover(settingsDefault.truncateRouteName)
+    .failover(SettingsDefault.truncateRouteName)
     .required(),
   environmentMenuSize: Joi.number()
     .min(Config.defaultEnvironmentMenuSize)
-    .failover(settingsDefault.environmentMenuSize)
+    .failover(SettingsDefault.environmentMenuSize)
     .required(),
   routeMenuSize: Joi.number()
     .min(Config.defaultRouteMenuSize)
-    .failover(settingsDefault.routeMenuSize)
+    .failover(SettingsDefault.routeMenuSize)
     .required(),
   logsMenuSize: Joi.number()
     .min(Config.defaultLogsMenuSize)
-    .failover(settingsDefault.logsMenuSize)
+    .failover(SettingsDefault.logsMenuSize)
     .required(),
-  fakerLocale: Joi.string().failover(settingsDefault.fakerLocale).required(),
+  fakerLocale: Joi.string().failover(SettingsDefault.fakerLocale).required(),
   fakerSeed: Joi.number()
     .allow(null)
-    .failover(settingsDefault.fakerSeed)
+    .failover(SettingsDefault.fakerSeed)
     .required(),
   lastChangelog: Joi.string()
-    .failover(settingsDefault.lastChangelog)
+    .failover(SettingsDefault.lastChangelog)
     .required(),
   environments: Joi.array()
     .items(
       Joi.object<EnvironmentDescriptor>({
-        uuid: Joi.string().required(),
+        uuid: Joi.string().uuid().required(),
         path: Joi.string().required()
       }),
       Joi.any().strip()
     )
-    .failover(settingsDefault.environments)
+    .failover(SettingsDefault.environments)
     .required(),
   lastMigration: Joi.number().strip(),
   enableTelemetry: Joi.boolean()
-    .failover(settingsDefault.enableTelemetry)
+    .failover(SettingsDefault.enableTelemetry)
     .required()
 })
-  .failover(settingsDefault)
-  .default(settingsDefault)
+  .failover(SettingsDefault)
+  .default(SettingsDefault)
   .options({ stripUnknown: true });

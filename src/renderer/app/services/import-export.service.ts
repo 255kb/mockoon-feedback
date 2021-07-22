@@ -12,6 +12,7 @@ import { cloneDeep } from 'lodash';
 import { Logger } from 'src/renderer/app/classes/logger';
 import { Config } from 'src/renderer/app/config';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
+import { RouteSchema } from 'src/renderer/app/constants/environment-schema.constants';
 import { AnalyticsEvents } from 'src/renderer/app/enums/analytics-events.enum';
 import { Errors } from 'src/renderer/app/enums/errors.enum';
 import { OldExport } from 'src/renderer/app/models/data.model';
@@ -396,7 +397,9 @@ export class ImportExportService extends Logger {
 
         // if has a current environment append imported route
         if (this.store.get('activeEnvironmentUUID')) {
-          this.store.update(addRouteAction(data.item));
+          this.store.update(
+            RouteSchema.validate(addRouteAction(data.item)).value
+          );
         } else {
           const newEnvironment: Environment = {
             ...this.schemasBuilderService.buildEnvironment(),

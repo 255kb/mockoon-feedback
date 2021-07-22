@@ -23,6 +23,7 @@ import {
 } from 'rxjs/operators';
 import { Logger } from 'src/renderer/app/classes/logger';
 import { MainAPI } from 'src/renderer/app/constants/common.constants';
+import { EnvironmentSchema } from 'src/renderer/app/constants/environment-schema.constants';
 import { AnalyticsEvents } from 'src/renderer/app/enums/analytics-events.enum';
 import { FocusableInputs } from 'src/renderer/app/enums/ui.enum';
 import { EnvironmentProperties } from 'src/renderer/app/models/environment.model';
@@ -162,11 +163,15 @@ export class EnvironmentsService extends Logger {
       tap((environmentsData) => {
         this.store.update(
           setInitialEnvironmentsAction(
-            environmentsData.map((environmentData) =>
-              this.migrationService.migrateEnvironment(
-                environmentData.environment
-              )
-            ),
+            environmentsData.map((environmentData) => {
+              const validated = EnvironmentSchema.validate(
+                this.migrationService.migrateEnvironment(
+                  environmentData.environment
+                )
+              );
+
+              return validated.value;
+            }),
             environmentsData.map(
               (environmentData) => environmentData.descriptor
             )
@@ -308,13 +313,14 @@ export class EnvironmentsService extends Logger {
         return EMPTY;
       }),
       tap((filePath) => {
+        const newEnvironment = environment
+          ? EnvironmentSchema.validate(environment).value
+          : this.schemasBuilderService.buildEnvironment();
+
         this.store.update(
-          addEnvironmentAction(
-            environment || this.schemasBuilderService.buildEnvironment(),
-            afterUUID,
-            filePath
-          )
+          addEnvironmentAction(newEnvironment, filePath, afterUUID)
         );
+
         this.uiService.scrollEnvironmentsMenu.next(ScrollDirection.BOTTOM);
         this.eventsService.analyticsEvents.next(
           AnalyticsEvents.CREATE_ENVIRONMENT
@@ -378,12 +384,15 @@ export class EnvironmentsService extends Logger {
       }),
       switchMap((filePath) =>
         this.storageService.loadData<Environment>(null, filePath).pipe(
-          map((environment) =>
-            this.migrationService.migrateEnvironment(environment)
+          map(
+            (environment) =>
+              EnvironmentSchema.validate(
+                this.migrationService.migrateEnvironment(environment)
+              ).value
           ),
           tap((environment) => {
             this.store.update(
-              addEnvironmentAction(environment, null, filePath)
+              addEnvironmentAction(environment, filePath, null)
             );
             this.uiService.scrollEnvironmentsMenu.next(ScrollDirection.BOTTOM);
           })
