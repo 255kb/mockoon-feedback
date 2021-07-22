@@ -25,7 +25,6 @@
             "main": "src/renderer/main.ts",
             "tsConfig": "src/renderer/tsconfig.app.json",
             "polyfills": "src/renderer/polyfills.ts",
-            "aot": true,
             "allowedCommonJsDependencies": ["lodash", "src/renderer/app/config"],
             "assets": [
               "src/renderer/assets",
@@ -46,7 +45,13 @@
               }
             ],
             "styles": ["src/renderer/styles/styles.scss"],
-            "scripts": ["node_modules/marked/lib/marked.js"]
+            "scripts": ["node_modules/marked/lib/marked.js"],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "namedChunks": true
           },
           "configurations": {
             "production": {
@@ -54,7 +59,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -70,7 +74,6 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
@@ -89,7 +92,8 @@
                 }
               ]
             }
-          }
+          },
+          "defaultConfiguration": ""
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
